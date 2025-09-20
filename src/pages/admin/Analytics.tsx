@@ -53,29 +53,29 @@ const Analytics: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Analytics Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400">Track platform performance and user engagement metrics.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Analytics Dashboard</h1>
+          <p className="text-gray-600">Track platform performance and user engagement metrics.</p>
         </div>
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {metrics.map((metric, index) => (
-            <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">{metric.title}</h3>
+                <h3 className="text-sm font-medium text-gray-600">{metric.title}</h3>
                 <div className={`flex items-center text-sm ${
-                  metric.trend === 'up' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                  metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
                 }`}>
                   {metric.trend === 'up' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
                   <span className="ml-1">{metric.change}</span>
                 </div>
               </div>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{metric.value}</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">{metric.description}</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">{metric.value}</div>
+              <div className="text-sm text-gray-500">{metric.description}</div>
             </div>
           ))}
         </div>
@@ -83,23 +83,23 @@ const Analytics: React.FC = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* User Growth Chart */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">User Growth</h2>
-                <select className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                <h2 className="text-lg font-semibold text-gray-900">User Growth</h2>
+                <select className="border border-gray-300 rounded-lg px-3 py-1 text-sm bg-white text-gray-900">
                   <option>Last 8 months</option>
                   <option>Last 6 months</option>
                   <option>Last year</option>
                 </select>
               </div>
-              
+
               {/* Simple bar chart representation */}
               <div className="space-y-4">
                 {userGrowth.map((data, index) => (
                   <div key={index} className="flex items-center">
-                    <div className="w-8 text-sm text-gray-600 dark:text-gray-400">{data.month}</div>
+                    <div className="w-8 text-sm text-gray-600">{data.month}</div>
                     <div className="flex-1 ml-4">
-                      <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-6 relative">
+                      <div className="bg-gray-200 rounded-full h-6 relative">
                         <div
                           className="bg-indigo-600 h-6 rounded-full flex items-center justify-end pr-2"
                           style={{ width: `${(data.users / 3000) * 100}%` }}
@@ -116,18 +116,18 @@ const Analytics: React.FC = () => {
 
           {/* Top Content */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Content</h2>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Top Content</h2>
               <div className="space-y-4">
                 {topContent.map((content, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center">
-                      <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">{index + 1}</span>
+                    <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-medium text-indigo-600">{index + 1}</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{content.title}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">by {content.author}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{content.views} views</p>
+                      <p className="text-sm font-medium text-gray-900 truncate">{content.title}</p>
+                      <p className="text-xs text-gray-500">by {content.author}</p>
+                      <p className="text-xs text-gray-500">{content.views} views</p>
                     </div>
                   </div>
                 ))}
@@ -135,36 +135,36 @@ const Analytics: React.FC = () => {
             </div>
 
             {/* Quick Stats */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Stats</h2>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Users className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Students</span>
+                    <Users className="w-5 h-5 text-blue-600 mr-2" />
+                    <span className="text-sm text-gray-600">Students</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">1,847</span>
+                  <span className="text-sm font-medium text-gray-900">1,847</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Users className="w-5 h-5 text-purple-600 dark:text-purple-400 mr-2" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Alumni</span>
+                    <Users className="w-5 h-5 text-purple-600 mr-2" />
+                    <span className="text-sm text-gray-600">Alumni</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">987</span>
+                  <span className="text-sm font-medium text-gray-900">987</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <FileText className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Articles</span>
+                    <FileText className="w-5 h-5 text-green-600 mr-2" />
+                    <span className="text-sm text-gray-600">Articles</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">456</span>
+                  <span className="text-sm font-medium text-gray-900">456</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Calendar className="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Sessions</span>
+                    <Calendar className="w-5 h-5 text-orange-600 mr-2" />
+                    <span className="text-sm text-gray-600">Sessions</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">789</span>
+                  <span className="text-sm font-medium text-gray-900">789</span>
                 </div>
               </div>
             </div>
@@ -173,8 +173,8 @@ const Analytics: React.FC = () => {
 
         {/* Activity Feed */}
         <div className="mt-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h2>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
             <div className="space-y-4">
               {[
                 { action: 'New user registered', user: 'John Doe', time: '2 minutes ago', type: 'user' },
@@ -182,21 +182,21 @@ const Analytics: React.FC = () => {
                 { action: 'Mentorship session completed', user: 'Mike Johnson', time: '1 hour ago', type: 'session' },
                 { action: 'System backup completed', user: 'System', time: '2 hours ago', type: 'system' }
               ].map((activity, index) => (
-                <div key={index} className="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div key={index} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    activity.type === 'user' ? 'bg-blue-100 dark:bg-blue-900' :
-                    activity.type === 'content' ? 'bg-purple-100 dark:bg-purple-900' :
-                    activity.type === 'session' ? 'bg-green-100 dark:bg-green-900' :
-                    'bg-gray-100 dark:bg-gray-600'
+                    activity.type === 'user' ? 'bg-blue-100' :
+                    activity.type === 'content' ? 'bg-purple-100' :
+                    activity.type === 'session' ? 'bg-green-100' :
+                    'bg-gray-100'
                   }`}>
-                    {activity.type === 'user' && <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />}
-                    {activity.type === 'content' && <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400" />}
-                    {activity.type === 'session' && <Calendar className="w-4 h-4 text-green-600 dark:text-green-400" />}
-                    {activity.type === 'system' && <TrendingUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />}
+                    {activity.type === 'user' && <Users className="w-4 h-4 text-blue-600" />}
+                    {activity.type === 'content' && <FileText className="w-4 h-4 text-purple-600" />}
+                    {activity.type === 'session' && <Calendar className="w-4 h-4 text-green-600" />}
+                    {activity.type === 'system' && <TrendingUp className="w-4 h-4 text-gray-600" />}
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{activity.action}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">by {activity.user} • {activity.time}</p>
+                    <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                    <p className="text-xs text-gray-500">by {activity.user} • {activity.time}</p>
                   </div>
                 </div>
               ))}

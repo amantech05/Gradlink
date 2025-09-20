@@ -1,5 +1,15 @@
-﻿import React, { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, Users, Calendar, Search, Download, Filter, Heart, Eye } from 'lucide-react';
+﻿import React, { useState, useEffect } from "react";
+import {
+  DollarSign,
+  TrendingUp,
+  Users,
+  Calendar,
+  Search,
+  Download,
+  Filter,
+  Heart,
+  Eye,
+} from "lucide-react";
 
 interface Donation {
   id: string;
@@ -9,13 +19,15 @@ interface Donation {
   ts: number;
 }
 
-const STORAGE_KEY = 'donations';
+const STORAGE_KEY = "donations";
 
 const FundMonitoring: React.FC = () => {
   const [donations, setDonations] = useState<Donation[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'date' | 'amount' | 'name'>('date');
-  const [filterAmount, setFilterAmount] = useState<'all' | 'small' | 'medium' | 'large'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "amount" | "name">("date");
+  const [filterAmount, setFilterAmount] = useState<
+    "all" | "small" | "medium" | "large"
+  >("all");
 
   useEffect(() => {
     const stored = sessionStorage.getItem(STORAGE_KEY);
@@ -27,28 +39,31 @@ const FundMonitoring: React.FC = () => {
   const totalAmount = donations.reduce((sum, d) => sum + d.amount, 0);
   const totalDonors = donations.length;
   const averageDonation = totalDonors > 0 ? totalAmount / totalDonors : 0;
-  const uniqueDonors = new Set(donations.map(d => d.name.toLowerCase())).size;
+  const uniqueDonors = new Set(donations.map((d) => d.name.toLowerCase())).size;
 
   // Filter and sort donations
   const filteredDonations = donations
-    .filter(donation => {
-      const matchesSearch = donation.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           (donation.message && donation.message.toLowerCase().includes(searchTerm.toLowerCase()));
-      
+    .filter((donation) => {
+      const matchesSearch =
+        donation.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (donation.message &&
+          donation.message.toLowerCase().includes(searchTerm.toLowerCase()));
+
       let matchesAmount = true;
-      if (filterAmount === 'small') matchesAmount = donation.amount <= 25;
-      else if (filterAmount === 'medium') matchesAmount = donation.amount > 25 && donation.amount <= 100;
-      else if (filterAmount === 'large') matchesAmount = donation.amount > 100;
+      if (filterAmount === "small") matchesAmount = donation.amount <= 25;
+      else if (filterAmount === "medium")
+        matchesAmount = donation.amount > 25 && donation.amount <= 100;
+      else if (filterAmount === "large") matchesAmount = donation.amount > 100;
 
       return matchesSearch && matchesAmount;
     })
     .sort((a, b) => {
       switch (sortBy) {
-        case 'date':
+        case "date":
           return b.ts - a.ts;
-        case 'amount':
+        case "amount":
           return b.amount - a.amount;
-        case 'name':
+        case "name":
           return a.name.localeCompare(b.name);
         default:
           return 0;
@@ -56,8 +71,8 @@ const FundMonitoring: React.FC = () => {
     });
 
   // Get recent donations (last 7 days)
-  const recentDonations = donations.filter(d => 
-    Date.now() - d.ts < 7 * 24 * 60 * 60 * 1000
+  const recentDonations = donations.filter(
+    (d) => Date.now() - d.ts < 7 * 24 * 60 * 60 * 1000
   );
 
   // Get top donors
@@ -68,47 +83,58 @@ const FundMonitoring: React.FC = () => {
   }, {} as Record<string, number>);
 
   const topDonors = Object.entries(donorTotals)
-    .sort(([,a], [,b]) => b - a)
+    .sort(([, a], [, b]) => b - a)
     .slice(0, 5)
     .map(([name, total]) => ({ name, total }));
 
   const exportData = () => {
     const csvContent = [
-      ['Name', 'Amount', 'Date', 'Message'],
-      ...donations.map(d => [
+      ["Name", "Amount", "Date", "Message"],
+      ...donations.map((d) => [
         d.name,
         d.amount.toString(),
         new Date(d.ts).toLocaleDateString(),
-        d.message || ''
-      ])
-    ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        d.message || "",
+      ]),
+    ]
+      .map((row) => row.map((cell) => `"${cell}"`).join(","))
+      .join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `donations-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `donations-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Fund Monitoring</h1>
-          <p className="text-gray-600 dark:text-gray-400">Monitor donations, track funding progress, and analyze donor contributions.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Fund Monitoring
+          </h1>
+          <p className="text-gray-600">
+            Monitor donations, track funding progress, and analyze donor
+            contributions.
+          </p>
         </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Raised</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">${totalAmount.toLocaleString()}</p>
-                <p className="text-sm text-green-600 dark:text-green-400 mt-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
+                  Total Raised
+                </p>
+                <p className="text-3xl font-bold text-gray-900">
+                  ${totalAmount.toLocaleString()}
+                </p>
+                <p className="text-sm text-green-600 mt-1">
                   {recentDonations.length} recent donations
                 </p>
               </div>
@@ -118,12 +144,16 @@ const FundMonitoring: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Donations</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{totalDonors}</p>
-                <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
+                  Total Donations
+                </p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {totalDonors}
+                </p>
+                <p className="text-sm text-blue-600 mt-1">
                   {uniqueDonors} unique donors
                 </p>
               </div>
@@ -133,14 +163,16 @@ const FundMonitoring: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Average Donation</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">${averageDonation.toFixed(0)}</p>
-                <p className="text-sm text-purple-600 dark:text-purple-400 mt-1">
-                  Per contribution
+                <p className="text-sm font-medium text-gray-600 mb-1">
+                  Average Donation
                 </p>
+                <p className="text-3xl font-bold text-gray-900">
+                  ${averageDonation.toFixed(0)}
+                </p>
+                <p className="text-sm text-purple-600 mt-1">Per contribution</p>
               </div>
               <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500">
                 <TrendingUp className="w-6 h-6 text-white" />
@@ -148,12 +180,16 @@ const FundMonitoring: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Unique Donors</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{uniqueDonors}</p>
-                <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
+                  Unique Donors
+                </p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {uniqueDonors}
+                </p>
+                <p className="text-sm text-orange-600 mt-1">
                   Active supporters
                 </p>
               </div>
@@ -167,11 +203,13 @@ const FundMonitoring: React.FC = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Donations Table */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+              <div className="p-6 border-b border-gray-200">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">All Donations</h2>
-                  
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    All Donations
+                  </h2>
+
                   <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                     {/* Search */}
                     <div className="relative">
@@ -181,7 +219,7 @@ const FundMonitoring: React.FC = () => {
                         placeholder="Search donors..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900 text-sm"
                       />
                     </div>
 
@@ -189,7 +227,7 @@ const FundMonitoring: React.FC = () => {
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value as any)}
-                      className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                      className="border border-gray-600  rounded-lg px-3 py-2 bg-white  text-gray-900  text-sm"
                     >
                       <option value="date">Sort by Date</option>
                       <option value="amount">Sort by Amount</option>
@@ -200,7 +238,7 @@ const FundMonitoring: React.FC = () => {
                     <select
                       value={filterAmount}
                       onChange={(e) => setFilterAmount(e.target.value as any)}
-                      className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                      className="border border-gray-300  rounded-lg px-3 py-2 bg-white  text-gray-900  text-sm"
                     >
                       <option value="all">All Amounts</option>
                       <option value="small">&lt;= $25</option>
@@ -222,48 +260,48 @@ const FundMonitoring: React.FC = () => {
 
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
+                  <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Donor
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                         Amount
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                         Date
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Message
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="divide-y divide-gray-200 ">
                     {filteredDonations.map((donation) => (
-                      <tr key={donation.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={donation.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
                               {donation.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="ml-3">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              <div className="text-sm font-medium text-gray-900">
                                 {donation.name}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm font-semibold text-green-600 dark:text-green-400">
+                          <div className="text-sm font-semibold text-green-600">
                             ${donation.amount.toLocaleString()}
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 text-sm text-gray-900">
                           {new Date(donation.ts).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-gray-600 dark:text-gray-400 max-w-xs truncate">
-                            {donation.message || '-'}
+                          <div className="text-sm text-gray-600 max-w-xs truncate">
+                            {donation.message || "-"}
                           </div>
                         </td>
                       </tr>
@@ -275,9 +313,13 @@ const FundMonitoring: React.FC = () => {
               {filteredDonations.length === 0 && (
                 <div className="text-center py-12">
                   <Eye className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No donations found</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {donations.length === 0 ? 'No donations have been made yet.' : 'Try adjusting your search criteria.'}
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No donations found
+                  </h3>
+                  <p className="text-gray-600">
+                    {donations.length === 0
+                      ? "No donations have been made yet."
+                      : "Try adjusting your search criteria."}
                   </p>
                 </div>
               )}
@@ -287,28 +329,33 @@ const FundMonitoring: React.FC = () => {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Top Donors */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Donors</h2>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Top Donors
+              </h2>
               <div className="space-y-3">
                 {topDonors.map((donor, index) => (
-                  <div key={donor.name} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div
+                    key={donor.name}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
                     <div className="flex items-center">
                       <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                         {index + 1}
                       </div>
                       <div className="ml-3">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white capitalize">
+                        <div className="text-sm font-medium text-gray-900">
                           {donor.name}
                         </div>
                       </div>
                     </div>
-                    <div className="text-sm font-semibold text-green-600 dark:text-green-400">
+                    <div className="text-sm font-semibold text-green-600">
                       ${donor.total.toLocaleString()}
                     </div>
                   </div>
                 ))}
                 {topDonors.length === 0 && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400 text-center py-4">
+                  <div className="text-sm text-gray-600 text-center py-4">
                     No donors yet
                   </div>
                 )}
@@ -316,31 +363,36 @@ const FundMonitoring: React.FC = () => {
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Donations</h2>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Recent Donations
+              </h2>
               <div className="space-y-3">
                 {recentDonations.slice(0, 5).map((donation) => (
-                  <div key={donation.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div
+                    key={donation.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
                     <div className="flex items-center">
                       <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-medium text-xs">
                         {donation.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="ml-3">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-gray-900">
                           {donation.name}
                         </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                        <div className="text-xs text-gray-600">
                           {new Date(donation.ts).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
-                    <div className="text-sm font-semibold text-green-600 dark:text-green-400">
+                    <div className="text-sm font-semibold text-green-600">
                       ${donation.amount}
                     </div>
                   </div>
                 ))}
                 {recentDonations.length === 0 && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400 text-center py-4">
+                  <div className="text-sm text-gray-600 text-center py-4">
                     No recent donations
                   </div>
                 )}
@@ -348,25 +400,44 @@ const FundMonitoring: React.FC = () => {
             </div>
 
             {/* Quick Stats */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Stats</h2>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Quick Stats
+              </h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">This Week</span>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    ${recentDonations.reduce((sum, d) => sum + d.amount, 0).toLocaleString()}
+                  <span className="text-sm text-gray-600">This Week</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    $
+                    {recentDonations
+                      .reduce((sum, d) => sum + d.amount, 0)
+                      .toLocaleString()}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Largest Donation</span>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    ${donations.length > 0 ? Math.max(...donations.map(d => d.amount)).toLocaleString() : '0'}
+                  <span className="text-sm text-gray-600">
+                    Largest Donation
+                  </span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    $
+                    {donations.length > 0
+                      ? Math.max(
+                          ...donations.map((d) => d.amount)
+                        ).toLocaleString()
+                      : "0"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Smallest Donation</span>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    ${donations.length > 0 ? Math.min(...donations.map(d => d.amount)).toLocaleString() : '0'}
+                  <span className="text-sm text-gray-600">
+                    Smallest Donation
+                  </span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    $
+                    {donations.length > 0
+                      ? Math.min(
+                          ...donations.map((d) => d.amount)
+                        ).toLocaleString()
+                      : "0"}
                   </span>
                 </div>
               </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Bell, Search, Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import ThemeToggle from '../common/ThemeToggle';
+
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -70,8 +70,7 @@ const Header = () => {
               <Bell className="w-5 h-5" />
             </button>
 
-            {/* Theme Toggle */}
-            <ThemeToggle />
+
 
             {/* Profile Dropdown */}
             <div className="relative">

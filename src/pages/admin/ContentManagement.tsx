@@ -76,28 +76,28 @@ const ContentManagement: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'published':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        return 'bg-green-100 text-green-800';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return 'bg-yellow-100 text-yellow-800';
       case 'draft':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+        return 'bg-gray-100 text-gray-800';
       case 'rejected':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'article':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+        return 'bg-blue-100 text-blue-800';
       case 'notice':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+        return 'bg-purple-100 text-purple-800';
       case 'session':
-        return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200';
+        return 'bg-indigo-100 text-indigo-800';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -114,16 +114,16 @@ const ContentManagement: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Content Management</h1>
-          <p className="text-gray-600 dark:text-gray-400">Review and manage articles, notices, and session materials.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Content Management</h1>
+          <p className="text-gray-600">Review and manage articles, notices, and session materials.</p>
         </div>
 
         {/* Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-4">
             {/* Search */}
             <div className="flex-1">
@@ -134,7 +134,7 @@ const ContentManagement: React.FC = () => {
                   placeholder="Search content..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900"
                 />
               </div>
             </div>
@@ -143,7 +143,7 @@ const ContentManagement: React.FC = () => {
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900"
             >
               <option value="">All Types</option>
               <option value="article">Articles</option>
@@ -155,7 +155,7 @@ const ContentManagement: React.FC = () => {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900"
             >
               <option value="">All Status</option>
               <option value="published">Published</option>
@@ -169,7 +169,7 @@ const ContentManagement: React.FC = () => {
         {/* Content Grid */}
         <div className="grid gap-6">
           {filteredContent.map((item) => (
-            <div key={item.id} className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
@@ -179,14 +179,14 @@ const ContentManagement: React.FC = () => {
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(item.status)}`}>
                       {item.status}
                     </span>
-                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full text-xs">
+                    <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">
                       {item.category}
                     </span>
                   </div>
-                  
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{item.title}</h3>
-                  
-                  <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
+
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
+
+                  <div className="flex items-center space-x-4 text-sm text-gray-600">
                     <span>By {item.author}</span>
                     <span>•</span>
                     <span>{new Date(item.createdDate).toLocaleDateString()}</span>
@@ -200,21 +200,21 @@ const ContentManagement: React.FC = () => {
                     <>
                       <button
                         onClick={() => handleApprove(item.id)}
-                        className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                        className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                         title="Approve"
                       >
                         <CheckCircle className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleReject(item.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Reject"
                       >
                         <XCircle className="w-5 h-5" />
                       </button>
                     </>
                   )}
-                  
+
                   <button className="p-2 text-gray-400 hover:text-indigo-600 rounded-lg transition-colors">
                     <Eye className="w-5 h-5" />
                   </button>
@@ -233,8 +233,8 @@ const ContentManagement: React.FC = () => {
         {filteredContent.length === 0 && (
           <div className="text-center py-12">
             <Clock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No content found</h3>
-            <p className="text-gray-600 dark:text-gray-400">Try adjusting your search criteria.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No content found</h3>
+            <p className="text-gray-600">Try adjusting your search criteria.</p>
           </div>
         )}
       </div>
