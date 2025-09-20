@@ -1,0 +1,11 @@
+﻿        <Route
+          path="/admin/funds"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <FundMonitoring />
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        
