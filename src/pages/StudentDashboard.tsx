@@ -1,13 +1,89 @@
-import React from 'react';
-import { Calendar, GraduationCap, Users, BookOpen, Clock, Trophy, MessageSquare, Bell } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Calendar, GraduationCap, Users, BookOpen, Clock, Trophy, MessageSquare, Bell, Lightbulb, DollarSign, CheckCircle } from 'lucide-react';
 import LevelBadge from '../components/common/LevelBadge';
 import { useAuth } from '../hooks/useAuth';
 import { meetings, notices, articles } from '../data/mockData';
+import { v4 as uuidv4 } from 'uuid';
+
+interface FundRequest {
+  id: string;
+  studentName: string;
+  title: string;
+  description: string;
+  requiredAmount: number;
+  raisedAmount: number;
+  ts: number;
+  status: 'active' | 'completed' | 'cancelled';
+}
+
+interface Donation {
+  id: string;
+  name: string;
+  amount: number;
+  message?: string;
+  ts: number;
+  requestId?: string;
+}
+
+const FUND_REQUESTS_KEY = 'fund_requests';
+const DONATIONS_KEY = 'donations';
 
 const StudentDashboard: React.FC = () => {
   const { user } = useAuth();
+
   const upcomingMeetings = meetings.filter(m => m.status === 'upcoming').slice(0, 3);
   const recentNotices = notices.slice(0, 3);
+
+  const [fundRequests, setFundRequests] = useState<FundRequest[]>([]);
+  const [donations, setDonations] = useState<Donation[]>([]);
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState<number | ''>('');
+
+  useEffect(() => {
+    const storedRequests = localStorage.getItem(FUND_REQUESTS_KEY);
+    const parsedRequests: FundRequest[] = storedRequests ? JSON.parse(storedRequests) : [];
+    setFundRequests(parsedRequests);
+
+    const storedDonations = localStorage.getItem(DONATIONS_KEY);
+    const parsedDonations: Donation[] = storedDonations ? JSON.parse(storedDonations) : [];
+    setDonations(parsedDonations);
+  }, []);
+
+  const calculateRaisedAmount = (requestId: string) => {
+    return donations
+      .filter(d => d.requestId === requestId)
+      .reduce((sum, d) => sum + d.amount, 0);
+  };
+
+  const getProgressPercentage = (requestId: string, requiredAmount: number) => {
+    const raised = calculateRaisedAmount(requestId);
+    return Math.min((raised / requiredAmount) * 100, 100);
+  };
+
+  const createFundRequest = () => {
+    if (!title || !description || !amount) return alert('Fill all fields!');
+    const newRequest: FundRequest = {
+      id: uuidv4(),
+      studentName: user?.name || 'Anonymous',
+      title,
+      description,
+      requiredAmount: Number(amount),
+      raisedAmount: 0,
+      ts: Date.now(),
+      status: 'active',
+    };
+    const updatedRequests = [newRequest, ...fundRequests];
+    setFundRequests(updatedRequests);
+    localStorage.setItem(FUND_REQUESTS_KEY, JSON.stringify(updatedRequests));
+
+    // Clear form
+    setTitle('');
+    setDescription('');
+    setAmount('');
+    alert('Fund request created!');
+  };
 
   const stats = [
     { label: 'Credits Earned', value: 92, icon: GraduationCap, color: 'from-indigo-500 to-blue-500' },
@@ -75,7 +151,9 @@ const StudentDashboard: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-sm border">
               <div className="p-6 border-b">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2"><BookOpen className="w-5 h-5 text-indigo-600" /> Featured Articles</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-indigo-600" /> Featured Articles
+                  </h3>
                   <button className="text-sm text-indigo-600 hover:underline">View all</button>
                 </div>
               </div>
@@ -91,6 +169,76 @@ const StudentDashboard: React.FC = () => {
                 ))}
               </div>
             </div>
+
+            {/* Fund Request Form */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-indigo-600" /> Raise Fund Request
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="border rounded-lg p-2"
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="border rounded-lg p-2"
+                />
+                <input
+                  type="number"
+                  placeholder="Required Amount"
+                  value={amount}
+                  onChange={(e) => setAmount(Number(e.target.value))}
+                  className="border rounded-lg p-2"
+                />
+              </div>
+              <button
+                onClick={createFundRequest}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              >
+                Submit Request
+              </button>
+            </div>
+
+            {/* Student Fund Requests List */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">My Fund Requests</h3>
+              {fundRequests.filter(req => req.studentName === user?.name).length > 0 ? (
+                <div className="space-y-4">
+                  {fundRequests.filter(req => req.studentName === user?.name).map(req => {
+                    const raised = calculateRaisedAmount(req.id);
+                    const progress = getProgressPercentage(req.id, req.requiredAmount);
+                    return (
+                      <div key={req.id} className="border rounded-lg p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <h4 className="font-medium text-gray-900">{req.title}</h4>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            req.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                          }`}>{req.status}</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{req.description}</p>
+                        <div className="w-full bg-gray-200 h-2 rounded-full mb-1">
+                          <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${progress}%` }}></div>
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-500">
+                          <span>{raised} / {req.requiredAmount} raised</span>
+                          <span>{progress.toFixed(0)}%</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500">No fund requests raised yet.</p>
+              )}
+            </div>
+
           </div>
 
           <div className="space-y-6">
@@ -125,4 +273,4 @@ const StudentDashboard: React.FC = () => {
   );
 };
 
-export default StudentDashboard; 
+export default StudentDashboard;

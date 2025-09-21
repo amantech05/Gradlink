@@ -2,6 +2,7 @@ import { User, Achievement, Article, Mentor, Notice, Meeting } from "../types";
 import Dogesh from "../assets/dogesh.jpg";
 import Bhediya from "../assets/bhediya.jpg";
 import pfp1 from "../assets/pfp1.jpg";
+import ws from "../assets/ws.jpg";
 
 export const studentUser: User = {
   id: "1",
@@ -35,7 +36,7 @@ export const adminUser: User = {
   id: "3",
   name: "Sir Ankit",
   email: "ankit@gradapp.test",
-  avatar: pfp1,
+  avatar: ws,
   title: "System Administrator",
   level: "Gold",
   levelProgress: 100,
